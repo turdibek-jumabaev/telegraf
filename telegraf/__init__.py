@@ -1,6 +1,5 @@
 import requests
 import json
-import re
 
 # Telegram API
 
@@ -109,6 +108,81 @@ class Telegraf:
                                        'duration': duration,
                                        'performer': performer,
                                        'title': title,
+                                       'disable_notification': disable_notification,
+                                       'reply_to_message_id': reply_to_message_id,
+                                       'reply_markup': json.dumps(reply_markup)})
+        return response.json()
+
+    def sendDocument(self, chat_id: int, document: str,
+                     caption: str = None, parse_mode: str = None,
+                     disable_notification: bool = None, reply_to_message_id: int = None,
+                     reply_markup: dict = None) -> dict:
+        """
+        API: https://core.telegram.org/bots/api#senddocument
+        """
+        if parse_mode is None:
+            parse_mode = self.parse_mode
+        if disable_notification is None:
+            disable_notification = False
+        if reply_to_message_id is None:
+            reply_to_message_id = None
+        if reply_markup is None:
+            reply_markup = {}
+        response = requests.post(f'{self.url}/sendDocument',
+                                 data={'chat_id': chat_id,
+                                       'document': document,
+                                       'caption': caption,
+                                       'parse_mode': parse_mode,
+                                       'disable_notification': disable_notification,
+                                       'reply_to_message_id': reply_to_message_id,
+                                       'reply_markup': json.dumps(reply_markup)})
+        return response.json()
+
+    def sendSticker(self, chat_id: int, sticker: str,
+                    disable_notification: bool = None, reply_to_message_id: int = None,
+                    reply_markup: dict = None) -> dict:
+        """
+        API: https://core.telegram.org/bots/api#sendsticker
+        """
+        if disable_notification is None:
+            disable_notification = False
+        if reply_to_message_id is None:
+            reply_to_message_id = None
+        if reply_markup is None:
+            reply_markup = {}
+        response = requests.post(f'{self.url}/sendSticker',
+                                 data={'chat_id': chat_id,
+                                       'sticker': sticker,
+                                       'disable_notification': disable_notification,
+                                       'reply_to_message_id': reply_to_message_id,
+                                       'reply_markup': json.dumps(reply_markup)})
+        return response.json()
+
+    def sendVideo(self, chat_id: int, video: str,
+                  duration: int = None, width: int = None, height: int = None,
+                  caption: str = None, parse_mode: str = None,
+                  supports_streaming: bool = None, disable_notification: bool = None,
+                  reply_to_message_id: int = None, reply_markup: dict = None) -> dict:
+        """
+        API: https://core.telegram.org/bots/api#sendvideo
+        """
+        if parse_mode is None:
+            parse_mode = self.parse_mode
+        if disable_notification is None:
+            disable_notification = False
+        if reply_to_message_id is None:
+            reply_to_message_id = None
+        if reply_markup is None:
+            reply_markup = {}
+        response = requests.post(f'{self.url}/sendVideo',
+                                 data={'chat_id': chat_id,
+                                       'video': video,
+                                       'duration': duration,
+                                       'width': width,
+                                       'height': height,
+                                       'caption': caption,
+                                       'parse_mode': parse_mode,
+                                       'supports_streaming': supports_streaming,
                                        'disable_notification': disable_notification,
                                        'reply_to_message_id': reply_to_message_id,
                                        'reply_markup': json.dumps(reply_markup)})
