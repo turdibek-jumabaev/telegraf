@@ -12,58 +12,75 @@ class Telegraf:
         self.parse_mode = parse_mode
         self.url = f'https://api.telegram.org/bot{self.token}'
 
-    def get_updates(self, offset: int = None, timeout: int = None, limit: int = None):
+    def getMe(self) -> dict:
         """
-        Get updates from Telegram
-        :param offset:
-        :param timeout:
-        :param limit:
-        :return:
+        API: https://core.telegram.org/bots/api#getme
         """
-        params = {}
-        if offset:
-            params['offset'] = offset
-        if timeout:
-            params['timeout'] = timeout
-        if limit:
-            params['limit'] = limit
-        return requests.get(f'{self.url}/getUpdates', params=params).json()
+        response = requests.get(f'{self.url}/getMe')
+        return response.json()
 
-    def get_me(self):
+    def sendMessage(self, chat_id: int, text: str,
+                    parse_mode: str = None, disable_web_page_preview: bool = None,
+                    disable_notification: bool = None, reply_to_message_id: int = None,
+                    reply_markup: dict = None) -> dict:
         """
-        Get bot info
-        :return:
+        API: https://core.telegram.org/bots/api
         """
-        return requests.get(f'{self.url}/getMe').json()
+        if parse_mode is None:
+            parse_mode = self.parse_mode
+        if disable_web_page_preview is None:
+            disable_web_page_preview = False
+        if disable_notification is None:
+            disable_notification = False
+        if reply_to_message_id is None:
+            reply_to_message_id = None
+        if reply_markup is None:
+            reply_markup = {}
+        response = requests.post(f'{self.url}/sendMessage',
+                                 data={'chat_id': chat_id,
+                                       'text': text,
+                                       'parse_mode': parse_mode,
+                                       'disable_web_page_preview': disable_web_page_preview,
+                                       'disable_notification': disable_notification,
+                                       'reply_to_message_id': reply_to_message_id,
+                                       'reply_markup': json.dumps(reply_markup)})
+        return response.json()
 
-    def send_message(self, chat_id: int, text: str, parse_mode: str = None, disable_web_page_preview: bool = None,
-                     disable_notification: bool = None, reply_to_message_id: int = None, reply_markup: dict = None):
+    def forwardMessage(self, chat_id: int, from_chat_id: int, message_id: int,
+                       disable_notification: bool = None) -> dict:
         """
-        Send message to chat
-        :param chat_id:
-        :param text:
-        :param parse_mode:
-        :param disable_web_page_preview:
-        :param disable_notification:
-        :param reply_to_message_id:
-        :param reply_markup:
-        :return:
+        API: https://core.telegram.org/bots/api
         """
-        params = {'chat_id': chat_id, 'text': text}
-        if parse_mode:
-            params['parse_mode'] = parse_mode
-        if disable_web_page_preview:
-            params['disable_web_page_preview'] = disable_web_page_preview
-        if disable_notification:
-            params['disable_notification'] = disable_notification
-        if reply_to_message_id:
-            params['reply_to_message_id'] = reply_to_message_id
-        if reply_markup:
-            params['reply_markup'] = json.dumps(reply_markup)
-        # return json
-        return requests.post(f'{self.url}/sendMessage', data=params).json()
+        if disable_notification is None:
+            disable_notification = False
+        response = requests.post(f'{self.url}/forwardMessage',
+                                 data={'chat_id': chat_id,
+                                       'from_chat_id': from_chat_id,
+                                       'message_id': message_id,
+                                       'disable_notification': disable_notification})
+        return response.json()
 
-
-# test
-bot = Telegraf('5120220134:AAHPNbEYTaIW2I8X607M43M-LfvCZ-OiI8Y')
-print(bot.get_me())
+    def sendPhoto(self, chat_id: int, photo: str,
+                  caption: str = None, parse_mode: str = None,
+                  disable_notification: bool = None, reply_to_message_id: int = None,
+                  reply_markup: dict = None) -> dict:
+        """
+        API: https://core.telegram.org/bots/api
+        """
+        if parse_mode is None:
+            parse_mode = self.parse_mode
+        if disable_notification is None:
+            disable_notification = False
+        if reply_to_message_id is None:
+            reply_to_message_id = None
+        if reply_markup is None:
+            reply_markup = {}
+        response = requests.post(f'{self.url}/sendPhoto',
+                                 data={'chat_id': chat_id,
+                                       'photo': photo,
+                                       'caption': caption,
+                                       'parse_mode': parse_mode,
+                                       'disable_notification': disable_notification,
+                                       'reply_to_message_id': reply_to_message_id,
+                                       'reply_markup': json.dumps(reply_markup)})
+        return response.json()
