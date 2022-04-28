@@ -24,7 +24,7 @@ class Telegraf:
                     disable_notification: bool = None, reply_to_message_id: int = None,
                     reply_markup: dict = None) -> dict:
         """
-        API: https://core.telegram.org/bots/api
+        API: https://core.telegram.org/bots/api#sendmessage
         """
         if parse_mode is None:
             parse_mode = self.parse_mode
@@ -49,7 +49,7 @@ class Telegraf:
     def forwardMessage(self, chat_id: int, from_chat_id: int, message_id: int,
                        disable_notification: bool = None) -> dict:
         """
-        API: https://core.telegram.org/bots/api
+        API: https://core.telegram.org/bots/api#forwardmessage
         """
         if disable_notification is None:
             disable_notification = False
@@ -80,6 +80,35 @@ class Telegraf:
                                        'photo': photo,
                                        'caption': caption,
                                        'parse_mode': parse_mode,
+                                       'disable_notification': disable_notification,
+                                       'reply_to_message_id': reply_to_message_id,
+                                       'reply_markup': json.dumps(reply_markup)})
+        return response.json()
+
+    def sendAudio(self, chat_id: int, audio: str,
+                  caption: str = None, parse_mode: str = None,
+                  duration: int = None, performer: str = None,
+                  title: str = None, disable_notification: bool = None,
+                  reply_to_message_id: int = None, reply_markup: dict = None) -> dict:
+        """
+        API: https://core.telegram.org/bots/api#sendaudio
+        """
+        if parse_mode is None:
+            parse_mode = self.parse_mode
+        if disable_notification is None:
+            disable_notification = False
+        if reply_to_message_id is None:
+            reply_to_message_id = None
+        if reply_markup is None:
+            reply_markup = {}
+        response = requests.post(f'{self.url}/sendAudio',
+                                 data={'chat_id': chat_id,
+                                       'audio': audio,
+                                       'caption': caption,
+                                       'parse_mode': parse_mode,
+                                       'duration': duration,
+                                       'performer': performer,
+                                       'title': title,
                                        'disable_notification': disable_notification,
                                        'reply_to_message_id': reply_to_message_id,
                                        'reply_markup': json.dumps(reply_markup)})
