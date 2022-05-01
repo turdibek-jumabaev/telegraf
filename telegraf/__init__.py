@@ -1,3 +1,4 @@
+from typing import Optional, List
 import requests
 import json
 
