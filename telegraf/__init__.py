@@ -1,6 +1,7 @@
 from typing import Optional, List
 import requests
 import json
+from aio_api import AIOTelegraf
 
 # Telegram API
 
